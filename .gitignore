@@ -1,0 +1,72 @@
+# Node modules
+node_modules/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Dependency directories
+/.pnp
+.pnp.js
+
+# TypeScript
+*.tsbuildinfo
+
+# Environment variables
+.env
+.env.*
+
+# Compiled output
+dist/
+build/
+out/
+
+# Debugging
+.vscode/
+.idea/
+.DS_Store
+
+# System files
+Thumbs.db
+
+# Coverage
+coverage/
+
+# Redis dump files
+dump.rdb
+dump-*.rdb
+
+# GitHub Actions
+*.lock
+
+# Temporary files
+*.tmp
+*.temp
+
+# IDE files
+*.swp
+
+# Miscellaneous
+*.bak
+*.orig
+*.log.*
+
+# Yarn v2+
+.yarn/
+.yarnrc.yml
+.pnp.*
+
+# Ignore private keys and certificates
+*.pem
+*.crt
+*.key
+
+# Output of testing
+.jest/
+
+# Specific to macOS
+**/.DS_Store
