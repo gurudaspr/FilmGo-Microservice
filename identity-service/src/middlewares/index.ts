@@ -7,7 +7,7 @@ import { config } from '../config';
 
 export const requestLogger = (req: Request, res: Response, next: NextFunction): void => {
   logger.info(`Received ${req.method} request to ${req.url}`);
-  logger.info(`Request body, ${JSON.stringify(req.body)}`);
+  // logger.info(`Request body, ${JSON.stringify(req.body)}`);
   next();
 };
 

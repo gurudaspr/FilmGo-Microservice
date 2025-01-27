@@ -1,10 +1,6 @@
 import { Request, Response } from 'express';
-import admin from 'firebase-admin';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import admin from  '../config/firebase'
 import User from '../models/user.model';
-
-// Initialize Firebase Admin SDK
-admin.initializeApp();
 
 // Google Login
 export const loginWithGoogle = async (req: Request, res: Response) => {
@@ -19,7 +15,7 @@ export const loginWithGoogle = async (req: Request, res: Response) => {
                 _id: user.uid,
                 googleId: user.providerData[0].uid,
                 provider: 'google',
-                displayName: user.displayName,
+                name: user.displayName,
                 photoURL: user.photoURL,
                 createdAt: new Date(),
                 updatedAt: new Date(),
