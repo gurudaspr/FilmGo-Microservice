@@ -2,31 +2,22 @@ import 'dotenv/config';
 import logger from './utils/logger';
 import express, { Request, Response, NextFunction } from 'express';
 import helmet from 'helmet';
-import cors from 'cors';
 import errorHandler from './middlewares/error.handler';
-import identityRoutes from './routes/identity.routes';
-import { connectDB, connectRedis } from './config/db';
-import { createRateLimiter, requestLogger } from './middlewares';
 import { config } from './config';
+import { connectCache, disconnectCache } from './config/rabbitmq';
+import { disconnectRedis } from './config/redis';
 
 
 
 const app = express();
 const PORT = config.port;
 
-connectDB();
-const redisClient = connectRedis();
+
 
 // Middleware
 app.use(helmet());
-app.use(cors());
-app.use(express.json());
-app.use(requestLogger);
-app.use(createRateLimiter(redisClient));
-
 
 // Routes
-app.use('/api/auth', identityRoutes);
 app.use(errorHandler);
 
 
@@ -35,8 +26,17 @@ app.use(errorHandler);
 // Start server
 const startServer = async () => {
     try {
+        await connectCache();
+        logger.info('Cache service started successfully');
+
+        process.on('SIGTERM', async () => {
+            logger.info('SIGTERM received, shutting down...');
+            await disconnectCache();
+            await disconnectRedis();
+            process.exit(0);
+        });
         app.listen(PORT, () => {
-            logger.info(`Identity service running on port ${PORT}`);
+            logger.info(`Cache service running on port ${PORT}`);
         });
     }
     catch (error: any) {

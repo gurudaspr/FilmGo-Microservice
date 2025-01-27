@@ -57,6 +57,29 @@ app.use(
     })
 );
 
+// proy for movie service
+app.use(
+    "/v1/movie",
+    proxy(config.identityServiceUrl, {
+        ...proxyOptions,
+        proxyReqOptDecorator: (proxyReqOpts, srcReq: Request) => {
+            proxyReqOpts.headers = {
+                ...proxyReqOpts.headers,
+                "Content-Type": "application/json",
+            };
+            return proxyReqOpts;
+        },
+        userResDecorator: (proxyRes, proxyResData, userReq, userRes) => {
+            logger.info(
+                `Response received from Identity service: ${proxyRes.statusCode}`
+            );
+
+            return proxyResData;
+        },
+    })
+);
+
+
 
 app.use(errorHandler);
 
@@ -64,5 +87,6 @@ app.use(errorHandler);
 app.listen(PORT, () => {
     logger.info(`API Gateway running on port ${config.port}`);
     logger.info(`Identity service is running on port ${config.identityServiceUrl}`);
+    logger.info(`Movie service is running on port ${config.movieServiceUrl}`);
     logger.info(`Redis server is running on port ${config.redis.url}`);
 });

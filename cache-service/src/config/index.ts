@@ -1,13 +1,13 @@
 import dotenv from 'dotenv';
+
 dotenv.config();
 
 export const config = {
-  port: process.env.PORT || 5000,
+  port: process.env.PORT || 5010,
   redis: {
     url: process.env.REDIS_URL as string,
   },
-  identityServiceUrl: process.env.IDENTITY_SERVICE_URL as string,
-  movieServiceUrl : process.env.MOVIE_SERVICE_URL as string,
+  rabbitMQ : process.env.RABBITMQ_URL as string,
   rateLimit: {
     standard: {
       points: 10,
