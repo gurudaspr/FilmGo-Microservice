@@ -3,12 +3,16 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export const config = {
-  port: process.env.PORT || 5001,
+  port: process.env.PORT || 5002,
   mongodb: {
     uri: process.env.MONGODB_URI as string,
   },
   redis: {
     url: process.env.REDIS_URL as string,
+  },
+  rabbitmq :{
+    url: process.env.RABBITMQ_URL as string,
+    exchange_name : process.env.EXCHANGE_NAME as string,
   },
   rateLimit: {
     standard: {

@@ -60,7 +60,7 @@ app.use(
 // proy for movie service
 app.use(
     "/v1/movie",
-    proxy(config.identityServiceUrl, {
+    proxy(config.movieServiceUrl, {
         ...proxyOptions,
         proxyReqOptDecorator: (proxyReqOpts, srcReq: Request) => {
             proxyReqOpts.headers = {
@@ -71,7 +71,7 @@ app.use(
         },
         userResDecorator: (proxyRes, proxyResData, userReq, userRes) => {
             logger.info(
-                `Response received from Identity service: ${proxyRes.statusCode}`
+                `Response received from Movie service: ${proxyRes.statusCode}`
             );
 
             return proxyResData;
@@ -79,6 +79,28 @@ app.use(
     })
 );
 
+
+// proy for admin service
+app.use(
+    "/v1/admin",
+    proxy(config.adminServiceUrl, {
+        ...proxyOptions,
+        proxyReqOptDecorator: (proxyReqOpts, srcReq: Request) => {
+            proxyReqOpts.headers = {
+                ...proxyReqOpts.headers,
+                "Content-Type": "application/json",
+            };
+            return proxyReqOpts;
+        },
+        userResDecorator: (proxyRes, proxyResData, userReq, userRes) => {
+            logger.info(
+                `Response received from Admin service: ${proxyRes.statusCode}`
+            );
+
+            return proxyResData;
+        },
+    })
+);
 
 
 app.use(errorHandler);
@@ -88,5 +110,6 @@ app.listen(PORT, () => {
     logger.info(`API Gateway running on port ${config.port}`);
     logger.info(`Identity service is running on port ${config.identityServiceUrl}`);
     logger.info(`Movie service is running on port ${config.movieServiceUrl}`);
+    logger.info(`Admin service is running on port ${config.adminServiceUrl}`);
     logger.info(`Redis server is running on port ${config.redis.url}`);
 });

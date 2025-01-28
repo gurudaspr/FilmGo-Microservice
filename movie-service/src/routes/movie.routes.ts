@@ -1,9 +1,12 @@
-import express from 'express';
+// movies.router.ts
+import { Router } from 'express';
+import { getAllMovies, addMovie } from '../controllers/movie.controller';
+
+const router = Router();
 
 
-
-
-const router = express.Router();
+router.get('/get-all-movies', getAllMovies);
+router.post('/add-movie', addMovie);
 
 
 export default router;

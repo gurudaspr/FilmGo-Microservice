@@ -31,28 +31,29 @@ async function publishEvent(routingKey: string, message: any): Promise<void> {
         logger.error('Failed to publish message: No active RabbitMQ channel.');
     }
 }
-
-async function consumeEvent(routingKey: string, callback: (msg: any) => void): Promise<void> {
+async function consumeEvent(queueName: string, routingKey: string, onMessage: (msg: any) => void): Promise<void> {
     try {
         if (!channel) {
             await connectRabbitMQ();
         }
 
         if (channel) {
-            // Create a temporary, exclusive queue that will automatically be deleted when the connection is closed
-            const queue = await channel.assertQueue('', { exclusive: true });
-            
-            await channel.bindQueue(queue.queue, EXCHANGE_NAME, routingKey);
-
-            await channel.consume(queue.queue, (msg) => {
+            await channel.assertQueue(queueName, { durable: true });
+            await channel.bindQueue(queueName, EXCHANGE_NAME, routingKey);
+            await channel.consume(queueName, (msg) => {
                 if (msg) {
                     const messageContent = JSON.parse(msg.content.toString());
-                    callback(messageContent);
+                    logger.info(`Message received on queue "${queueName}": ${JSON.stringify(messageContent)}`);
+                    
+         
+                    onMessage(messageContent);
+
+          
                     channel?.ack(msg);
                 }
             });
 
-            logger.info(`Subscribed to event: ${routingKey}`);
+            logger.info(`Listening for messages on queue "${queueName}" with routing key "${routingKey}"`);
         }
     } catch (error) {
         logger.error(`Error consuming message: ${(error as Error).message}`);
