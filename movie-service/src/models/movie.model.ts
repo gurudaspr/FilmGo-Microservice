@@ -1,8 +1,9 @@
 
-import mongoose, { Schema, Document } from 'mongoose';
-import slugify from 'slugify'; // Ensure you install this package: npm install slugify
+import mongoose, { Schema, Document, Types } from 'mongoose';
+import slugify from 'slugify';
 
 export interface IMovie extends Document {
+  _id: Types.ObjectId;
   title: string;
   description: string;
   genres: string[];

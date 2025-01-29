@@ -80,6 +80,29 @@ app.use(
 );
 
 
+// proy for search service
+app.use(
+    "/v1/search",
+    proxy(config.searchServiceUrl, {
+        ...proxyOptions,
+        proxyReqOptDecorator: (proxyReqOpts, srcReq: Request) => {
+            proxyReqOpts.headers = {
+                ...proxyReqOpts.headers,
+                "Content-Type": "application/json",
+            };
+            return proxyReqOpts;
+        },
+        userResDecorator: (proxyRes, proxyResData, userReq, userRes) => {
+            logger.info(
+                `Response received from Movie service: ${proxyRes.statusCode}`
+            );
+
+            return proxyResData;
+        },
+    })
+);
+
+
 // proy for admin service
 app.use(
     "/v1/admin",
@@ -110,6 +133,7 @@ app.listen(PORT, () => {
     logger.info(`API Gateway running on port ${config.port}`);
     logger.info(`Identity service is running on port ${config.identityServiceUrl}`);
     logger.info(`Movie service is running on port ${config.movieServiceUrl}`);
+    logger.info(`Search service is running on port ${config.searchServiceUrl}`);
     logger.info(`Admin service is running on port ${config.adminServiceUrl}`);
     logger.info(`Redis server is running on port ${config.redis.url}`);
 });

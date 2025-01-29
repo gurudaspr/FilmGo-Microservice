@@ -48,7 +48,7 @@ app.use(errorHandler);
 const startServer = async () => {
   try {
     await connectRabbitMQ();
-    await consumeEvent('movie.add',handleMovieAdd);
+    await consumeEvent('movie.add',(data) => handleMovieAdd(data, redisClient)); 
     app.listen(PORT, () => {
       logger.info(`Movie service running on port ${PORT}`);
     });

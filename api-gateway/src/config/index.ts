@@ -9,6 +9,7 @@ export const config = {
   identityServiceUrl: process.env.IDENTITY_SERVICE_URL as string,
   movieServiceUrl : process.env.MOVIE_SERVICE_URL as string,
   adminServiceUrl : process.env.ADMIN_SERVICE_URL as string,
+  searchServiceUrl : process.env.SEARCH_SERVICE_URL as string,
   rateLimit: {
     standard: {
       points: 10,
