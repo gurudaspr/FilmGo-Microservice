@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export const config = {
-  port: process.env.PORT || 5010,
+  port: process.env.PORT || 5004,
   mongodb: {
     uri: process.env.MONGODB_URI as string,
   },
@@ -14,7 +14,10 @@ export const config = {
     url: process.env.RABBITMQ_URL as string,
     exchange_name : process.env.EXCHANGE_NAME as string,
   },
-  api_url : process.env.API_URL  as string,
+  cloud_name: process.env.CLOUD_NAME as string,
+  api_key: process.env.API_KEY as string,
+  api_secret: process.env.API_SECRET as string,
+  
   rateLimit: {
     standard: {
       points: 10,

@@ -103,18 +103,46 @@ app.use(
 );
 
 
+app.use(
+    "/v1/media",
+    proxy(config.mediaServiceUrl, {
+      ...proxyOptions,
+      proxyReqOptDecorator: (proxyReqOpts, srcReq: Request) => {
+        if (!srcReq.headers["content-type"]?.startsWith("multipart/form-data")) {
+          proxyReqOpts.headers = {
+            ...proxyReqOpts.headers,
+            "Content-Type": "application/json",
+          };
+        }
+        return proxyReqOpts;
+      },
+      userResDecorator: (
+        proxyRes, proxyResData, userReq, userRes
+      ) => {
+        logger.info(
+          `Response received from media service: ${proxyRes.statusCode}`
+        );
+        return proxyResData;
+      },
+      parseReqBody: false,
+    })
+  );
+
+
 // proy for admin service
 app.use(
     "/v1/admin",
     proxy(config.adminServiceUrl, {
         ...proxyOptions,
         proxyReqOptDecorator: (proxyReqOpts, srcReq: Request) => {
-            proxyReqOpts.headers = {
-                ...proxyReqOpts.headers,
-                "Content-Type": "application/json",
-            };
-            return proxyReqOpts;
-        },
+            if (!srcReq.headers["content-type"]?.startsWith("multipart/form-data")) {
+                proxyReqOpts.headers = {
+                  ...proxyReqOpts.headers,
+                  "Content-Type": "application/json",
+                };
+              }
+              return proxyReqOpts;
+            },
         userResDecorator: (proxyRes, proxyResData, userReq, userRes) => {
             logger.info(
                 `Response received from Admin service: ${proxyRes.statusCode}`
@@ -134,6 +162,7 @@ app.listen(PORT, () => {
     logger.info(`Identity service is running on port ${config.identityServiceUrl}`);
     logger.info(`Movie service is running on port ${config.movieServiceUrl}`);
     logger.info(`Search service is running on port ${config.searchServiceUrl}`);
+    logger.info(`Media service is running on port ${config.mediaServiceUrl}`);
     logger.info(`Admin service is running on port ${config.adminServiceUrl}`);
     logger.info(`Redis server is running on port ${config.redis.url}`);
 });
